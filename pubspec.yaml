@@ -53,6 +53,14 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  assets:
+    - android/assets/background.mp3
+    - android/assets/jumpscare.mp3
+    - android/assets/victory.mp3
+    - android/assets/bat.png
+    - android/assets/tree.png
+    - android/assets/ghost.png
+    - android/assets/pumpkin.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
