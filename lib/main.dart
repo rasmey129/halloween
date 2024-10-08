@@ -11,7 +11,14 @@ class HalloweenScreen extends StatefulWidget {
 
 class _HalloweenScreenState extends State<HalloweenScreen> {
   final AudioPlayer backgroundPlayer = AudioPlayer();
-  
+  int counter = 0;
+
+  void incrementCounter() {
+    setState(() {
+      counter++;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -30,6 +37,7 @@ class _HalloweenScreenState extends State<HalloweenScreen> {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,8 +47,20 @@ class _HalloweenScreenState extends State<HalloweenScreen> {
        body: Stack(
         children: [
           SpookyCharacter(),
-          const Center(
-            child: Text('Welcome to Halloween!'),
+          InteractiveTrap(onTap: incrementCounter),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text(
+                  'You have tapped the trap this many times:',
+                ),
+                Text(
+                  '$counter',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+              ],
+            )
           ),
         ],
       )
