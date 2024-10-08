@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Halloween'),
     );
   }
 }
@@ -32,7 +32,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  
+  final AudioPlayer backgroundPlayer = AudioPlayer();
+
+Future<void> playBackground() async{
+  await backgroundPlayer.setAsset('assets');
+  backgroundPlayer.setLoopMode(LoopMode.one);
+    backgroundPlayer.play();
+}
+
+void initialState(){
+  super.initState();
+  playBackground();
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -58,11 +71,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
