@@ -11,7 +11,7 @@ class HalloweenScreen extends StatefulWidget {
 
 class _HalloweenScreenState extends State<HalloweenScreen> {
   final AudioPlayer backgroundPlayer = AudioPlayer();
-
+  
   @override
   void initState() {
     super.initState();
@@ -19,7 +19,7 @@ class _HalloweenScreenState extends State<HalloweenScreen> {
   }
 
   Future<void> playBackgroundMusic() async {
-    await backgroundPlayer.setAsset('assets');
+    await backgroundPlayer.setAsset('assets/background.mp3');
     backgroundPlayer.setLoopMode(LoopMode.one);
     backgroundPlayer.play();
   }
@@ -36,9 +36,14 @@ class _HalloweenScreenState extends State<HalloweenScreen> {
       appBar: AppBar(
         title: const Text('Halloween'),
       ),
-      body: const Center(
-        child: Text('Welcome to Halloween!'),
-      ),
+       body: Stack(
+        children: [
+          SpookyCharacter(),
+          const Center(
+            child: Text('Welcome to Halloween!'),
+          ),
+        ],
+      )
     );
   }
 }
@@ -81,6 +86,32 @@ class SpookyCharacterState extends State<SpookyCharacter>
       top: topPosition,
       left: leftPosition,
       child: Image.asset('assets/images/ghost.png', width: 50),
+    );
+  }
+}
+
+class InteractiveTrap extends StatelessWidget {
+  final AudioPlayer trapPlayer = AudioPlayer();
+  final VoidCallback onTap;
+
+  InteractiveTrap({required this.onTap}) {
+    trapPlayer.setAsset('assets/sounds/jumpscare.mp3');
+  }
+
+  @override 
+
+   Widget build(BuildContext context) {
+    return Positioned(
+      top: 200,
+      left: 100,
+      child: GestureDetector(
+        onTap: () {
+          trapPlayer.seek(Duration.zero);
+          trapPlayer.play();
+          onTap(); 
+        },
+        child: Image.asset('assets/images/spooky_trap.png', width: 50),
+      ),
     );
   }
 }
