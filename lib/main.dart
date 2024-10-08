@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'dart:math';
 
+
+void main(){
+  runApp(const HalloweenScreen());
+}
+
+
 class HalloweenScreen extends StatefulWidget {
   const HalloweenScreen({super.key});
 
@@ -133,5 +139,14 @@ class InteractiveTrap extends StatelessWidget {
         child: Image.asset('assets/images/spooky_trap.png', width: 50),
       ),
     );
+  }
+}
+
+class WinElement extends StatelessElement{
+  final AudioPlayer victoryPlayer = AudioPlayer();
+  final VoidCallback onTap;
+
+  WinElement({required this.onTap}){
+    victoryPlayer.setAsset('assets/sounds/victory.mp3');
   }
 }
