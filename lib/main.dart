@@ -142,11 +142,40 @@ class InteractiveTrap extends StatelessWidget {
   }
 }
 
-class WinElement extends StatelessElement{
+class Winning extends StatelessWidget {
   final AudioPlayer victoryPlayer = AudioPlayer();
   final VoidCallback onTap;
 
-  WinElement({required this.onTap}){
+  Winning({required this.onTap}) {
     victoryPlayer.setAsset('assets/sounds/victory.mp3');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 300,
+      left: 200,
+      child: GestureDetector(
+        onTap: () {
+          victoryPlayer.seek(Duration.zero);
+          victoryPlayer.play();
+          onTap();
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: const Text("You found the winning element"),
+              content: const Text("Congratulations!"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("OK"),
+                ),
+              ],
+            ),
+          );
+        },
+        child: Image.asset('assets/images/hidden_item.png', width: 50),
+      ),
+    );
   }
 }
