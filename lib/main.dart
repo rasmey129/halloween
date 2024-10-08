@@ -140,7 +140,7 @@ class InteractiveTrap extends StatelessWidget {
   final VoidCallback onTap;
 
   InteractiveTrap({required this.onTap}) {
-    trapPlayer.setAsset('assets/sounds/jumpscare.mp3');
+    trapPlayer.setAsset('assets/jumpscare.mp3');
   }
 
   @override
@@ -154,7 +154,7 @@ class InteractiveTrap extends StatelessWidget {
           trapPlayer.play();
           onTap();
         },
-        child: Image.asset('assets/spooky_trap.png', width: 50),
+        child: Image.asset('assets/tree.png', width: 50), //trap
       ),
     );
   }
@@ -192,7 +192,7 @@ class Winning extends StatelessWidget {
             ),
           );
         },
-        child: Image.asset('assets/hidden_item.png', width: 50),
+        child: Image.asset('assets/pumpkin.png', width: 50), //win
       ),
     );
   }
