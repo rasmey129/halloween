@@ -2,11 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'dart:math';
 
-
-void main(){
-  runApp(const HalloweenScreen());
+void main() {
+  runApp(MaterialApp(
+    home: HalloweenScreen(),
+  ));
 }
 
+class HalloweenApp extends StatelessWidget {
+  const HalloweenApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Halloween Interactive Experience',
+      theme: ThemeData.dark(), // Dark theme for Halloween
+      home: const HalloweenScreen(),
+    );
+  }
+}
 
 class HalloweenScreen extends StatefulWidget {
   const HalloweenScreen({super.key});
@@ -43,17 +56,18 @@ class _HalloweenScreenState extends State<HalloweenScreen> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Halloween'),
       ),
-       body: Stack(
+      body: Stack(
         children: [
-          SpookyCharacter(),
+          const SpookyCharacter(),
           InteractiveTrap(onTap: incrementCounter),
+          Winning(onTap: () {
+          }),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -66,15 +80,17 @@ class _HalloweenScreenState extends State<HalloweenScreen> {
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ],
-            )
+            ),
           ),
         ],
-      )
+      ),
     );
   }
 }
 
 class SpookyCharacter extends StatefulWidget {
+  const SpookyCharacter({super.key});
+
   @override
   SpookyCharacterState createState() => SpookyCharacterState();
 }
@@ -85,22 +101,24 @@ class SpookyCharacterState extends State<SpookyCharacter>
   double topPosition = 0;
   double leftPosition = 0;
   final random = Random();
-   @override
+
+  @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
     )..repeat(reverse: true);
+
     _controller.addListener(() {
       setState(() {
         topPosition = random.nextDouble() * 300;
         leftPosition = random.nextDouble() * 300;
       });
     });
-   }
+  }
 
-   @override
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -111,7 +129,7 @@ class SpookyCharacterState extends State<SpookyCharacter>
     return Positioned(
       top: topPosition,
       left: leftPosition,
-      child: Image.asset('assets/images/ghost.png', width: 50),
+      child: Image.asset('assets/ghost.png', width: 50),
     );
   }
 }
@@ -124,9 +142,8 @@ class InteractiveTrap extends StatelessWidget {
     trapPlayer.setAsset('assets/sounds/jumpscare.mp3');
   }
 
-  @override 
-
-   Widget build(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return Positioned(
       top: 200,
       left: 100,
@@ -134,9 +151,9 @@ class InteractiveTrap extends StatelessWidget {
         onTap: () {
           trapPlayer.seek(Duration.zero);
           trapPlayer.play();
-          onTap(); 
+          onTap();
         },
-        child: Image.asset('assets/images/spooky_trap.png', width: 50),
+        child: Image.asset('assets/spooky_trap.png', width: 50),
       ),
     );
   }
@@ -147,7 +164,7 @@ class Winning extends StatelessWidget {
   final VoidCallback onTap;
 
   Winning({required this.onTap}) {
-    victoryPlayer.setAsset('assets/sounds/victory.mp3');
+    victoryPlayer.setAsset('assets/victory.mp3');
   }
 
   @override
@@ -174,7 +191,7 @@ class Winning extends StatelessWidget {
             ),
           );
         },
-        child: Image.asset('assets/images/hidden_item.png', width: 50),
+        child: Image.asset('assets/hidden_item.png', width: 50),
       ),
     );
   }
