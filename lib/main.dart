@@ -1,4 +1,3 @@
-//team members: Rasmey Oung, Chris Baez
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'dart:math';
@@ -16,7 +15,7 @@ class HalloweenApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Halloween Interactive Experience',
-      theme: ThemeData.dark(), // Dark theme for Halloween
+      theme: ThemeData.dark(),
       home: const HalloweenScreen(),
     );
   }
@@ -29,20 +28,48 @@ class HalloweenScreen extends StatefulWidget {
   _HalloweenScreenState createState() => _HalloweenScreenState();
 }
 
-class _HalloweenScreenState extends State<HalloweenScreen> {
+class _HalloweenScreenState extends State<HalloweenScreen>
+    with SingleTickerProviderStateMixin {
   final AudioPlayer backgroundPlayer = AudioPlayer();
-  int counter = 0;
 
-  void incrementCounter() {
-    setState(() {
-      counter++;
-    });
-  }
+  late AnimationController _controller;
+  final Random random = Random();
+
+  double ghostTop = 0;
+  double ghostLeft = 0;
+  double trapTop = 200;
+  double trapLeft = 100;
+  double pumpkinTop = 300;
+  double pumpkinLeft = 200;
+
+  int frameSkip = 0;
 
   @override
   void initState() {
     super.initState();
     playBackgroundMusic();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(reverse: true);
+
+    _controller.addListener(() {
+      frameSkip++;
+      if (frameSkip % 30 == 0) {
+        setState(() {
+          ghostTop = random.nextDouble() * 300;
+          ghostLeft = random.nextDouble() * 300;
+
+          trapTop = random.nextDouble() * 400;
+          trapLeft = random.nextDouble() * 200;
+
+          pumpkinTop = random.nextDouble() * 500;
+          pumpkinLeft = random.nextDouble() * 300;
+        });
+        frameSkip = 0;
+      }
+    });
   }
 
   Future<void> playBackgroundMusic() async {
@@ -54,6 +81,7 @@ class _HalloweenScreenState extends State<HalloweenScreen> {
   @override
   void dispose() {
     backgroundPlayer.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -65,23 +93,28 @@ class _HalloweenScreenState extends State<HalloweenScreen> {
       ),
       body: Stack(
         children: [
-          const SpookyCharacter(),
-          InteractiveTrap(onTap: incrementCounter),
-          Winning(onTap: () {
-          }),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text(
-                  'You have tapped the trap this many times:',
-                ),
-                Text(
-                  '$counter',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-              ],
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/appbackground.png'),
+                fit: BoxFit.cover,
+              ),
             ),
+          ),
+          Positioned(
+            top: ghostTop,
+            left: ghostLeft,
+            child: const SpookyCharacter(),
+          ),
+          Positioned(
+            top: trapTop,
+            left: trapLeft,
+            child: InteractiveTrap(onTap: () {}),
+          ),
+          Positioned(
+            top: pumpkinTop,
+            left: pumpkinLeft,
+            child: Winning(onTap: () {}),
           ),
         ],
       ),
@@ -89,49 +122,12 @@ class _HalloweenScreenState extends State<HalloweenScreen> {
   }
 }
 
-class SpookyCharacter extends StatefulWidget {
+class SpookyCharacter extends StatelessWidget {
   const SpookyCharacter({super.key});
 
   @override
-  SpookyCharacterState createState() => SpookyCharacterState();
-}
-
-class SpookyCharacterState extends State<SpookyCharacter>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  double topPosition = 0;
-  double leftPosition = 0;
-  final random = Random();
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-    )..repeat(reverse: true);
-
-    _controller.addListener(() {
-      setState(() {
-        topPosition = random.nextDouble() * 300;
-        leftPosition = random.nextDouble() * 300;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: topPosition,
-      left: leftPosition,
-      child: Image.asset('assets/ghost.png', width: 50),
-    );
+    return Image.asset('assets/ghost.png', width: 50);
   }
 }
 
@@ -145,17 +141,13 @@ class InteractiveTrap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: 200,
-      left: 100,
-      child: GestureDetector(
-        onTap: () {
-          trapPlayer.seek(Duration.zero);
-          trapPlayer.play();
-          onTap();
-        },
-        child: Image.asset('assets/tree.png', width: 50), //trap
-      ),
+    return GestureDetector(
+      onTap: () {
+        trapPlayer.seek(Duration.zero);
+        trapPlayer.play();
+        onTap();
+      },
+      child: Image.asset('assets/tree.png', width: 50),
     );
   }
 }
@@ -170,30 +162,26 @@ class Winning extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: 300,
-      left: 200,
-      child: GestureDetector(
-        onTap: () {
-          victoryPlayer.seek(Duration.zero);
-          victoryPlayer.play();
-          onTap();
-          showDialog(
-            context: context,
-            builder: (_) => AlertDialog(
-              title: const Text("You found the winning element"),
-              content: const Text("Congratulations!"),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text("OK"),
-                ),
-              ],
-            ),
-          );
-        },
-        child: Image.asset('assets/pumpkin.png', width: 50), //win
-      ),
+    return GestureDetector(
+      onTap: () {
+        victoryPlayer.seek(Duration.zero);
+        victoryPlayer.play();
+        onTap();
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text("You found the winning element"),
+            content: const Text("Congratulations!"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("OK"),
+              ),
+            ],
+          ),
+        );
+      },
+      child: Image.asset('assets/pumpkin.png', width: 50),
     );
   }
 }
