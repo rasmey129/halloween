@@ -71,6 +71,7 @@ flutter:
     - assets/ghost.png
     - assets/pumpkin.png
     - assets/appbackground.png
+    - assets/music.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

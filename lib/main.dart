@@ -1,3 +1,4 @@
+// Group Members : Rasmey Oung, Chris Baez
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'dart:math';
@@ -73,7 +74,7 @@ class _HalloweenScreenState extends State<HalloweenScreen>
   }
 
   Future<void> playBackgroundMusic() async {
-    await backgroundPlayer.setAsset('assets/background.mp3');
+    await backgroundPlayer.setAsset('assets/music.mp3');
     backgroundPlayer.setLoopMode(LoopMode.one);
     backgroundPlayer.play();
   }
